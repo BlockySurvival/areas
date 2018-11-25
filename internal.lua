@@ -85,7 +85,7 @@ function areas:add(owner, name, pos1, pos2, parent)
 		pos2 = pos2,
 		owner = owner,
 		parent = parent,
-      canPvP = true
+      canPvP = nil,
 	}
 	-- Add to AreaStore
 	if self.store then
