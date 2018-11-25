@@ -29,7 +29,8 @@ minetest.register_on_punchplayer(function(player, hitter, time_from_last_punch, 
       return false
    end
    -- Do any of the areas have allowed PvP?
-   for a in pairs(inAreas) do
+   for aId in pairs(inAreas) do
+      local a = areas.areas[id]
       if a.canPvP then
          return false
       end
