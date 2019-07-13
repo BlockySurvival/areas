@@ -383,10 +383,10 @@ minetest.register_chatcommand("area_info", {
 			table.insert(lines, ("%s spanning up to %dx%dx%d.")
 				:format(str, size.x, size.y, size.z))
 		end
-		local function priv_limit_info(priv, max_count, max_size)
+		local function priv_limit_info(lpriv, lmax_count, lmax_size)
 			size_info(("Players with the %q privilege"..
 				" can protect up to %d areas"):format(
-					priv, max_count), max_size)
+					lpriv, lmax_count), lmax_size)
 		end
 		if self_prot then
 			if privs.areas then
