@@ -14,6 +14,25 @@ minetest.register_on_protection_violation(function(pos, name)
 			("%s is protected by %s."):format(
 				minetest.pos_to_string(pos),
 				table.concat(owners, ", ")))
+		local player = minetest.get_player_by_name(name)
+		if player and player:is_player() then
+			-- invert the player's yaw/pitch on violation
+			local yaw = player:get_look_horizontal() + math.pi
+			if yaw > 2 * math.pi then
+				yaw = yaw - 2 * math.pi
+			end
+			player:set_look_horizontal(yaw)
+			player:set_look_vertical(-player:get_look_vertical())
+			-- if the player digs a node below them, teleport 0.8 up
+			local player_pos = player:get_pos()
+			if pos.y < player_pos.y then
+				player:set_pos({
+					x = player_pos.x,
+					y = player_pos.y + 0.8,
+					z = player_pos.z
+				})
+			end
+		end
 	end
 end)
 
