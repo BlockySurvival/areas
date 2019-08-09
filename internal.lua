@@ -299,9 +299,9 @@ function areas:sort()
 end
 
 -- Checks if a player owns an area or a parent of it
-function areas:isAreaOwner(id, name)
+function areas:isAreaOwner(id, name, strict)
 	local cur = self.areas[id]
-	if cur and minetest.check_player_privs(name, self.adminPrivs) then
+	if not strict and cur and minetest.check_player_privs(name, self.adminPrivs) then
 		return true
 	end
 	while cur do

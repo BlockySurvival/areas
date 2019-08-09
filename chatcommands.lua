@@ -157,16 +157,15 @@ minetest.register_chatcommand("find_areas", {
 			return false, "Invalid regular expression."
 		end
 
-		local matches = {}
+		local found_areas = false
 		for id, area in pairs(areas.areas) do
 			local str = areas:toString(id)
 			if str:find(param) then
-				table.insert(matches, str)
+				found_areas = true
+				minetest.chat_send_player(name, str)
 			end
 		end
-		if #matches > 0 then
-			return true, table.concat(matches, "\n")
-		else
+		if not found_areas then
 			return true, "No matches found."
 		end
 	end
@@ -176,17 +175,17 @@ minetest.register_chatcommand("find_areas", {
 minetest.register_chatcommand("list_areas", {
 	description = "List your areas, or all areas if you are an admin.",
 	func = function(name, param)
-		local admin = minetest.check_player_privs(name, areas.adminPrivs)
-		local areaStrings = {}
+		local found_areas = false
 		for id, area in pairs(areas.areas) do
-			if admin or areas:isAreaOwner(id, name) then
-				table.insert(areaStrings, areas:toString(id))
+			if areas:isAreaOwner(id, name, true) then
+				found_areas = true
+				minetest.chat_send_player(name, areas:toString(id))
 			end
 		end
-		if #areaStrings == 0 then
+		if not found_areas then
 			return true, "No visible areas."
 		end
-		return true, table.concat(areaStrings, "\n")
+		return true
 	end
 })
 
