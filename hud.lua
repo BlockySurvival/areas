@@ -4,7 +4,6 @@ areas.hud = {}
 areas.hud.refresh = 0
 
 minetest.register_globalstep(function(dtime)
-
 	areas.hud.refresh = areas.hud.refresh + dtime
 	if areas.hud.refresh > areas.config["tick"] then
 		areas.hud.refresh = 0

@@ -75,8 +75,7 @@ minetest.register_chatcommand("add_owner", {
 		.." positions that have already been protected,"
 		.." Use set_owner if you don't want the parent to be set."),
 	func = function(name, param)
-		local pid, ownerName, areaName
-				= param:match('^(%d+) ([^ ]+) (.+)$')
+		local pid, ownerName, areaName = param:match('^(%d+) ([^ ]+) (.+)$')
 
 		if not pid then
 			minetest.chat_send_player(name, S("Invalid usage, see /help @1.", "add_owner"))
@@ -293,7 +292,7 @@ if areas.factions_available then
 			if not id then
 				return false, S("Invalid usage, see /help @1.", "area_faction_open")
 			end
-			
+
 			if not areas:isAreaOwner(id, name) then
 				return false, S("Area @1 does not exist"
 						.." or is not owned by you.", id)
@@ -385,7 +384,7 @@ minetest.register_chatcommand("area_info", {
 				area_num = area_num + 1
 			end
 		end
-		table.insert(lines, S("You have @1 areas.", area_num)) 
+		table.insert(lines, S("You have @1 areas.", area_num))
 
 		-- Area limit
 		local area_limit_line = privs.areas and
@@ -437,4 +436,28 @@ minetest.register_chatcommand("toggle_area_pvp", {
 		areas:save()
 		return true, ("PvP is %s in Area."):format(canPvP and "enabled" or "disabled")
    end
+})
+
+minetest.register_chatcommand("areas_cleanup", {
+	description = S("Removes all ownerless areas"),
+	privs = areas.adminPrivs,
+	func = function()
+		local total, count = 0, 0
+
+		local aareas = areas.areas
+		for id, _ in pairs(aareas) do
+			local owner = aareas[id].owner
+
+			if not areas:player_exists(owner) then
+				areas:remove(id)
+				count = count + 1
+			end
+
+			total = total + 1
+		end
+		areas:save()
+
+		return true, "Total areas: " .. total .. ", Removed " ..
+			count .. " areas. New count: " .. (total - count)
+	end
 })
