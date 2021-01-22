@@ -176,12 +176,12 @@ end
 -- Check if PvP is enabled in an area
 -- @returns true or false (enabled or disabled)
 function areas:canPvP(id)
-   local area = self.areas[id]
+	local area = self.areas[id]
 	if not area then
 		return true
 	end
-   -- canPvP is nil when false
-   return area.canPvP or false
+	-- canPvP is nil when false
+	return area.canPvP or false
 end
 
 -- Checks if a area between two points is entirely contained by another area.
