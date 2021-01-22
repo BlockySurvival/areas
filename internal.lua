@@ -102,7 +102,7 @@ function areas:add(owner, name, pos1, pos2, parent)
 		pos2 = pos2,
 		owner = owner,
 		parent = parent,
-      canPvP = nil,
+		canPvP = nil
 	}
 
 	for i=1, #areas.registered_on_adds do

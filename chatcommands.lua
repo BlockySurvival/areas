@@ -479,3 +479,24 @@ minetest.register_chatcommand("areas_cleanup", {
 			count .. " areas. New count: " .. (total - count)
 	end
 })
+
+minetest.register_chatcommand("toggle_area_pvp", {
+   description = "Toggle PvP in an area",
+   params = "<ID>",
+   func = function(name, param)
+      local id = tonumber(param)
+		if not id then
+			return false, "Invalid usage, see /help toggle_area_pvp."
+		end
+
+		if not areas:isAreaOwner(id, name) then
+			return false, "Area "..id.." does not exist"
+					.." or is not owned by you."
+		end
+		local canPvP = not areas.areas[id].canPvP
+		-- Save false as nil to avoid inflating the DB.
+		areas.areas[id].canPvP = canPvP or nil
+		areas:save()
+		return true, ("PvP is %s in Area."):format(canPvP and "enabled" or "disabled")
+   end
+})
