@@ -140,31 +140,42 @@ minetest.register_chatcommand("rename_area", {
 
 
 minetest.register_chatcommand("find_areas", {
-	params = "<regexp>",
+	params = "<regexp> [<limit>=20]",
 	description = S("Find areas using a Lua regular expression"),
 	privs = areas.adminPrivs,
 	func = function(name, param)
-		if param == "" then
+		local regexp, limit = params:match('^(.*)%s+(%d+)%s*$')
+		if not regexp then
+			regexp = param
+		end
+		if not regexp or regexp == "" then
 			return false, S("A regular expression is required.")
 		end
 
 		-- Check expression for validity
 		local function testRegExp()
-			("Test [1]: Player (0,0,0) (0,0,0)"):find(param)
+			("Test [1]: Player (0,0,0) (0,0,0)"):find(regexp)
 		end
 		if not pcall(testRegExp) then
 			return false, S("Invalid regular expression.")
 		end
 
-		local found_areas = false
+		if not limit then
+			limit = 20
+		end
+
+		local num_found = 0
 		for id, area in pairs(areas.areas) do
 			local str = areas:toString(id)
 			if str:find(param) then
-				found_areas = true
+				num_found = num_found + 1
 				minetest.chat_send_player(name, str)
+				if num_found >= limit then
+					break
+				end
 			end
 		end
-		if not found_areas then
+		if num_found == 0 then
 			return true, S("No matches found.")
 		end
 	end
@@ -172,15 +183,17 @@ minetest.register_chatcommand("find_areas", {
 
 
 minetest.register_chatcommand("list_areas", {
-	description = S("List your areas, or all areas if you are an admin."),
+	description = S("List your areas."),
 	func = function(name, param)
 		local found_areas = false
+
 		for id, area in pairs(areas.areas) do
 			if areas:isAreaOwner(id, name, true) then
 				found_areas = true
 				minetest.chat_send_player(name, areas:toString(id))
 			end
 		end
+
 		if not found_areas then
 			return true, S("No visible areas.")
 		end
