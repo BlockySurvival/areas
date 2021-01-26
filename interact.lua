@@ -45,12 +45,12 @@ minetest.register_on_punchplayer(function(player, hitter, time_from_last_punch, 
 	-- Check if the victim is in an area with allowed PvP or in an unprotected area
 	local inAreas = areas:getAreasAtPos(hitter:getpos())
 	-- If the table is empty, PvP is allowed
-	if next(inAreas) == nil then
+	if not next(inAreas) then
 		return false
 	end
 	-- Do any of the areas have allowed PvP?
-	for a in pairs(inAreas) do
-		if a.canPvP then
+	for id, area in pairs(inAreas) do
+		if area.canPvP then
 			return false
 		end
 	end
