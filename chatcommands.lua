@@ -144,7 +144,7 @@ minetest.register_chatcommand("find_areas", {
 	description = S("Find areas using a Lua regular expression"),
 	privs = areas.adminPrivs,
 	func = function(name, param)
-		local regexp, limit = params:match('^(.*)%s+(%d+)%s*$')
+		local regexp, limit = param:match('^(.*)%s+(%d+)%s*$')
 		if not regexp then
 			regexp = param
 		end
